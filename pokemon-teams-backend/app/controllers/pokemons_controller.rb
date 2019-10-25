@@ -10,4 +10,12 @@ class PokemonsController < ApplicationController
       render json: PokemonSerializer.new(pokemon)
     end
 
+    def create
+      Pokemon.create(pokemon_params)
+    end
+  
+  private
+  def pokemon_params
+    params.permit(:nickname, :species, :trainer_id)
+  end
 end

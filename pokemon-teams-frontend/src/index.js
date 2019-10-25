@@ -6,6 +6,7 @@ const trainersList = document.getElementById("trainers-list")
 
 document.addEventListener("DOMContentLoaded", fetchTrainers());
 
+
 function fetchTrainers() {
     fetch(TRAINERS_URL)
     .then(response => response.json())
@@ -13,7 +14,6 @@ function fetchTrainers() {
 }
 
 function loadTrainers(json) {
-    //console.log(json)
     json.data.forEach(trainer => {
         const div = document.createElement('div')
         div.className = 'card'
@@ -28,12 +28,13 @@ function loadTrainers(json) {
         ul.className = 'pokemons-list'
         div.appendChild(ul)
 
+        createAddForm(trainer);
+        addEventListenersToForms();
         renderPokemons(trainer);
     })
 }
 
 function renderPokemons(trainer_json){
-    //console.log(trainer_json)
   trainer_json.attributes.pokemons.forEach(pokemon => {
     const trainerDiv = document.getElementById(trainer_json.id)
 
@@ -44,7 +45,61 @@ function renderPokemons(trainer_json){
   })
 }
 
+function createAddForm(trainer_json){
+  let trainerDiv = document.getElementById(trainer_json.id)
 
+  let f = document.createElement('form')
+  f.setAttribute('method','post');
+  f.className = 'new-pokemon-form'
 
+  let i = document.createElement('input')
+  i.setAttribute('type', 'text')
+  i.setAttribute('name', 'nickname')
+  i.setAttribute('value', 'Nickname')
 
+  let i2 = document.createElement('input')
+  i2.setAttribute('type', 'text')
+  i2.setAttribute('name', 'species')
+  i2.setAttribute('value', 'Species')
 
+  let s = document.createElement('input')
+  s.setAttribute('type', 'submit')
+  s.setAttribute('value', 'Add Pokemon')
+
+  f.appendChild(i)
+  f.appendChild(i2)
+  f.appendChild(s)
+  trainerDiv.appendChild(f)
+}
+
+function addEventListenersToForms() {
+    const forms = document.querySelectorAll('form')
+  
+    forms.forEach(form => {
+        form.addEventListener('submit', event => {
+            event.preventDefault();
+            addPokemon(event.target)
+        })
+    })
+  }
+
+function addPokemon(form) {
+    let configObj = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          "nickname": form.nickname.value, 
+          "species": form.species.value, 
+          "trainer_id": form.parentElement.id})
+    }
+
+    fetch('http://localhost:3000/pokemons', configObj)
+    .then(fetchTrainers())
+    .catch(error => {
+        alert("An error occurred.")
+        console.log(error.message)
+    })
+}
