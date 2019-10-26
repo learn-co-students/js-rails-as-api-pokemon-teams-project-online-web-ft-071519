@@ -41,9 +41,25 @@ function renderPokemons(trainer_json){
     const li = document.createElement('li')
     li.innerText = `${pokemon.nickname} (${pokemon.species})`
     trainerDiv.lastElementChild.appendChild(li)
+    trainerDiv.querySelector('ul').appendChild(li)
+
+    const releaseButton = document.createElement('button')
+    releaseButton.class = 'release'
+    releaseButton.innerHTML = 'Release'
+    li.appendChild(releaseButton)
+
+    addReleaseEventListener(releaseButton);
 
   })
 }
+
+ function addReleaseEventListener(button) {
+   button.addEventListener('click', event => {
+       event.preventDefault();
+       releasePokemon(event)
+   })
+ }
+
 
 function createAddForm(trainer_json){
   let trainerDiv = document.getElementById(trainer_json.id)
@@ -102,4 +118,12 @@ function addPokemon(form) {
         alert("An error occurred.")
         console.log(error.message)
     })
+}
+
+function releasePokemon(e) {
+    //e.target.parentElement.parentElement.remove
+
+    //patch request to /pokemons/:id
+      //set trainer id to null
+    //re render trainer list/the pokemon shouldnt be on the team anymore
 }
