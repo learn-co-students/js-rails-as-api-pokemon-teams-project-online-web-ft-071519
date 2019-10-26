@@ -28,20 +28,20 @@ function loadTrainers(json) {
         ul.className = 'pokemons-list'
         div.appendChild(ul)
 
-        createAddForm(trainer);
-        addEventListenersToForms();
-        renderPokemons(trainer);
+        //how do I make ul, form, and li's render in correct places?????
+        renderPokemons(trainer, ul, div)
+        createAddForm(trainer, div)
+        addEventListenersToForms()
     })
 }
 
-function renderPokemons(trainer_json){
+function renderPokemons(trainer_json, list, trainerDiv){
   trainer_json.attributes.pokemons.forEach(pokemon => {
-    const trainerDiv = document.getElementById(trainer_json.id)
 
     const li = document.createElement('li')
+    li.id = pokemon.id
     li.innerText = `${pokemon.nickname} (${pokemon.species})`
-    trainerDiv.lastElementChild.appendChild(li)
-    trainerDiv.querySelector('ul').appendChild(li)
+    list.appendChild(li)
 
     const releaseButton = document.createElement('button')
     releaseButton.class = 'release'
@@ -61,8 +61,7 @@ function renderPokemons(trainer_json){
  }
 
 
-function createAddForm(trainer_json){
-  let trainerDiv = document.getElementById(trainer_json.id)
+function createAddForm(trainer_json, trainerDiv){
 
   let f = document.createElement('form')
   f.setAttribute('method','post');
@@ -88,6 +87,7 @@ function createAddForm(trainer_json){
   trainerDiv.appendChild(f)
 }
 
+
 function addEventListenersToForms() {
     const forms = document.querySelectorAll('form')
   
@@ -98,6 +98,7 @@ function addEventListenersToForms() {
         })
     })
   }
+
 
 function addPokemon(form) {
     let configObj = {
@@ -120,10 +121,23 @@ function addPokemon(form) {
     })
 }
 
-function releasePokemon(e) {
-    //e.target.parentElement.parentElement.remove
 
-    //patch request to /pokemons/:id
-      //set trainer id to null
-    //re render trainer list/the pokemon shouldnt be on the team anymore
+ function releasePokemon(e) {
+    const pokemonId = e.target.parentElement.id
+
+    configObj = {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        body: JSON.stringify({"id": pokemonId})
+    }
+
+    fetch(`http://localhost:3000/pokemons/${pokemonId}`, configObj)
+    .then(fetchTrainers())
+    .catch(error => {
+        alert("An error occurred")
+        console.log(error.message)
+    })
 }
