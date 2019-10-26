@@ -55,8 +55,9 @@ function renderPokemons(trainer_json, list, trainerDiv){
 
  function addReleaseEventListener(button) {
    button.addEventListener('click', event => {
+       const pokemonId = button.parentElement.id
        event.preventDefault();
-       releasePokemon(event)
+       releasePokemon(pokemonId)
    })
  }
 
@@ -112,7 +113,7 @@ function addPokemon(form) {
           "species": form.species.value, 
           "trainer_id": form.parentElement.id})
     }
-
+//an error is occuring and the DOM is not updating automatically with new li for poke. Why??
     fetch('http://localhost:3000/pokemons', configObj)
     .then(fetchTrainers())
     .catch(error => {
@@ -122,22 +123,24 @@ function addPokemon(form) {
 }
 
 
- function releasePokemon(e) {
-    const pokemonId = e.target.parentElement.id
-
+ function releasePokemon(pokemonId) {
     configObj = {
-        method: "PATCH",
+        method: "DELETE",
         headers: {
             "Content-Type": "application/json",
             "Accept": "application/json"
         },
-        body: JSON.stringify({"id": pokemonId})
+        body: JSON.stringify(pokemonId)
     }
 
     fetch(`http://localhost:3000/pokemons/${pokemonId}`, configObj)
-    .then(fetchTrainers())
-    .catch(error => {
-        alert("An error occurred")
-        console.log(error.message)
+    .then(function(response) {
+        return response.json()
+    })
+
+    //the DOM is not updating automatically and deleting the li. Have to refresh. Why??
+    .then( () => {
+        const li = document.querySelectorAll('li').getElementById(pokemonId)
+        li.parentElement.removeChild(li)
     })
 }

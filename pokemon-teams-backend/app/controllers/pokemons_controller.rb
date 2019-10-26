@@ -13,6 +13,11 @@ class PokemonsController < ApplicationController
     def create
       Pokemon.create(pokemon_params)
     end
+
+    def destroy
+      pokemon = Pokemon.find_by_id(params[:id])
+      pokemon.destroy
+    end
   
   private
   def pokemon_params
