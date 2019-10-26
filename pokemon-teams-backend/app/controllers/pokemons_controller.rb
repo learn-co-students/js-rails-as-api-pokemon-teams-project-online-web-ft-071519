@@ -12,6 +12,8 @@ class PokemonsController < ApplicationController
 
     def create
       Pokemon.create(pokemon_params)
+      new_pokemon = Pokemon.last
+      render json: PokemonSerializer.new(new_pokemon)
     end
 
     def destroy
