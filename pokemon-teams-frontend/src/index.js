@@ -114,9 +114,7 @@ function addPokemon(form) {
           "species": form.species.value, 
           "trainer_id": form.parentElement.id})
     }
-//an error is occuring and the DOM is not updating automatically with new li for poke. Why??
     fetch('http://localhost:3000/pokemons', configObj)
-    // .then(fetchTrainers())
     .then(function(response) {
         return response.json()
     })
@@ -126,7 +124,6 @@ function addPokemon(form) {
 }
 
 function createPokemon(data) {
-    //console.log(data)
     const ul = document.getElementById(data.relationships.trainer.data.id).querySelector('ul')
     const li = document.createElement('li')
     li.id = data.id
